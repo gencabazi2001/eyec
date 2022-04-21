@@ -1,24 +1,72 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from "./components/Header";
+import { ThemeProvider } from "styled-components";
+import SideNav from "./components/SideNav";
+import GlobalStyles from "./components/styled/Global";
+import Home from "./Pages/Home";
+import HomeHeader from "./components/HomeHeader";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import {Routes, Route,Navigate } from "react-router-dom";
+import {useSelector } from "react-redux";
+import Access from "./Pages/Access";
 
+const theme = {
+  colors: {
+    header: "#ebfbff",
+    body: "#fff",
+    footer: "#003333",
+    darkCont: "#3B6EAD",
+    dark: "#437FC7",
+    light: "#FFFFFF",
+    darker: "#17252A",
+    primart: "#3AAFA9",
+    fatal: "#FFDF14",
+    lightBackground:"#EDF6FF",
+  },
+};
+/*
+ font-family: 'Abril Fatface', cursive;
+  font-family: 'BioRhyme', serif;
+*/
 function App() {
+
+  var loggedIn = useSelector((state)=>state.isLoggedIn)
+ 
+  const ProtectedRoute = ({ isLogged, children }) => {
+    if (!isLogged) {
+      return <Navigate to="/" replace />;
+    }
+    return children;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <div style={{ backgroundColor: theme.colors.lightBackground, padding: "0px" }}>
+        <Routes>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
+          <Route
+            path="/"
+            element={
+              <>
+                <HomeHeader />
+                <Home />
+              </>
+            }
+          ></Route>
+          
+          <Route
+            path="/main"
+            element={
+              <ProtectedRoute isLogged={loggedIn}>  
+               <Access/>
+              </ProtectedRoute>
+            }
+          ></Route>
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 }
 
