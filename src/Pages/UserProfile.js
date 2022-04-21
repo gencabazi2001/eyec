@@ -38,7 +38,8 @@ function UserProfile() {
     }
 
   };
- 
+    
+  
 
   return (
     <ColContainer w="70%">
